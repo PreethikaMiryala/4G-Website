@@ -20,7 +20,16 @@ export default async function AccountPage() {
       addresses: true,
       orders: {
         orderBy: { createdAt: 'desc' },
-        take: 3,
+        take: 10, // Increase slightly so they can see history
+        include: {
+          items: {
+            include: {
+              product: {
+                select: { name: true, images: true }
+              }
+            }
+          }
+        }
       }
     }
   });
@@ -117,22 +126,45 @@ export default async function AccountPage() {
           <div id="orders" className="bg-white rounded-2xl shadow-sm border border-earth-100 p-8 scroll-mt-28">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Recent Orders</h2>
-              <button className="text-primary hover:underline font-medium">View All</button>
             </div>
             
             {user.orders.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {user.orders.map((order: any) => (
-                  <div key={order.id} className="flex justify-between items-center border-b border-earth-100 pb-4 last:border-0 last:pb-0">
-                    <div>
-                      <p className="font-medium">Order #{order.id.substring(0, 8).toUpperCase()}</p>
-                      <p className="text-sm text-earth-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  <div key={order.id} className="border border-earth-100 rounded-2xl p-6 bg-earth-50/30">
+                    <div className="flex justify-between items-start border-b border-earth-100 pb-4 mb-4">
+                      <div>
+                        <p className="font-bold text-lg text-earth-900">Order #{order.id.substring(0, 8).toUpperCase()}</p>
+                        <p className="text-sm text-earth-500 font-medium">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
+                        <span className="inline-block px-3 py-1 bg-primary/10 text-primary-800 rounded-full text-xs font-bold mt-2 tracking-wide uppercase">
+                          {order.status}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-black text-xl text-earth-900">₹{order.totalAmount}</p>
+                        <p className="text-xs text-earth-500 font-medium uppercase tracking-wider">{order.paymentMethod}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold">₹{order.totalAmount}</p>
-                      <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium mt-1">
-                        {order.status}
-                      </span>
+                    
+                    <div className="space-y-3">
+                      {order.items && order.items.map((item: any) => (
+                        <div key={item.id} className="flex items-center gap-4">
+                          <div className="w-12 h-12 relative bg-white rounded-lg overflow-hidden shrink-0 border border-earth-100">
+                            {item.product?.images?.[0] ? (
+                              <Image src={item.product.images[0]} alt={item.product.name || "Product"} fill className="object-cover" />
+                            ) : (
+                              <div className="w-full h-full bg-earth-100 flex items-center justify-center">
+                                <ShoppingBag className="w-5 h-5 text-earth-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-grow">
+                            <p className="font-bold text-sm text-earth-900">{item.product?.name || "Deleted Product"}</p>
+                            <p className="text-xs text-earth-500">Qty: {item.quantity}</p>
+                          </div>
+                          <p className="font-bold text-sm text-earth-900">₹{item.price}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}

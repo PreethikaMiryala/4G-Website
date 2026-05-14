@@ -9,23 +9,63 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+import { useSession } from "next-auth/react";
+
 export default function CheckoutPage() {
+  const { data: session, status } = useSession();
   const { items, getCartTotal, clearCart } = useCartStore();
   const [isClient, setIsClient] = useState(false);
   const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Success
+  const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null;
+  // Require authentication
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      toast.error("Login is mandatory to place an order.");
+      router.push("/login?redirect=/checkout");
+    }
+  }, [status, router]);
+
+  // Pre-fill form data when session loads
+  useEffect(() => {
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || session.user.name || "",
+        email: prev.email || session.user.email || ""
+      }));
+    }
+  }, [session]);
+
+  if (!isClient || status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="container mx-auto px-4 pt-32 pb-24 text-center min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-earth-500 font-medium tracking-widest uppercase text-sm">Securing your checkout...</p>
+      </div>
+    );
+  }
 
   if (items.length === 0 && step !== 3) {
     return (
-      <div className="container mx-auto px-4 pt-32 pb-24 text-center">
-        <h1 className="text-2xl font-bold mb-4">Your bag is empty</h1>
-        <Link href="/products" className="text-primary hover:underline">Return to Shop</Link>
+      <div className="container mx-auto px-4 pt-32 pb-24 text-center min-h-[60vh] flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-black text-earth-900 mb-4 tracking-tight">Your bag is empty</h1>
+        <p className="text-earth-500 mb-8 max-w-md mx-auto">Looks like you haven't added any natural remedies to your cart yet.</p>
+        <Link href="/products" className="bg-earth-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-primary transition-all shadow-xl shadow-earth-900/20">
+          Return to Shop
+        </Link>
       </div>
     );
   }
@@ -35,11 +75,47 @@ export default function CheckoutPage() {
   const shipping = subtotal > 1000 ? 0 : 99;
   const total = subtotal + tax + shipping;
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep(3);
-    clearCart();
-    toast.success("Order placed successfully!");
+    setIsProcessing(true);
+    
+    try {
+      const payload = {
+        totalAmount: total,
+        paymentMethod: "COD",
+        shippingAddress: formData,
+        items: items.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          price: item.product.price
+        }))
+      };
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          toast.error("Please log in to place an order.");
+          router.push("/login?redirect=/checkout");
+          return;
+        }
+        throw new Error(data.error || "Failed to place order");
+      }
+
+      setStep(3);
+      clearCart();
+      toast.success("Order placed successfully via Cash on Delivery!");
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -89,14 +165,38 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-earth-400 uppercase tracking-wider ml-1">Full Name</label>
-                      <input required className="w-full bg-earth-50/50 p-4 border border-earth-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white focus:outline-none transition-all" placeholder="Enter your full name" />
+                      <input 
+                        required 
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        className="w-full bg-earth-50/50 p-4 border border-earth-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white focus:outline-none transition-all" 
+                        placeholder="Enter your full name" 
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-earth-400 uppercase tracking-wider ml-1">Phone Number</label>
-                      <input required className="w-full bg-earth-50/50 p-4 border border-earth-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white focus:outline-none transition-all" placeholder="+91 00000 00000" />
+                      <input 
+                        required 
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        className="w-full bg-earth-50/50 p-4 border border-earth-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white focus:outline-none transition-all" 
+                        placeholder="+91 00000 00000" 
+                      />
                     </div>
                   </div>
                   
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-earth-400 uppercase tracking-wider ml-1">Email Address</label>
+                    <input 
+                      required 
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full bg-earth-50/50 p-4 border border-earth-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white focus:outline-none transition-all" 
+                      placeholder="you@example.com" 
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-earth-400 uppercase tracking-wider ml-1">Street Address</label>
                     <input required className="w-full bg-earth-50/50 p-4 border border-earth-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white focus:outline-none transition-all" placeholder="Building, Street, Area" />
@@ -129,19 +229,20 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-6 border-2 border-primary bg-primary/5 rounded-2xl cursor-pointer">
+                  <div className="p-6 rounded-2xl border-2 border-primary bg-primary/5 cursor-pointer">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-bold text-earth-900">Cash on Delivery</span>
                       <div className="w-5 h-5 rounded-full border-4 border-primary bg-white" />
                     </div>
                     <p className="text-xs text-earth-500 font-medium tracking-wide">PAY AT YOUR DOORSTEP</p>
                   </div>
-                  <div className="p-6 border border-earth-100 rounded-2xl cursor-not-allowed opacity-50 grayscale">
+
+                  <div className="p-6 rounded-2xl border border-earth-100 opacity-50 grayscale cursor-not-allowed">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-bold text-earth-900">Online Payment</span>
-                      <div className="w-5 h-5 rounded-full border border-earth-200 bg-white" />
+                      <div className="w-5 h-5 rounded-full border border-earth-300 bg-white" />
                     </div>
-                    <p className="text-xs text-earth-400 font-medium tracking-wide">CARDS, UPI, NETBANKING</p>
+                    <p className="text-xs text-earth-400 font-medium tracking-wide">TEMPORARILY UNAVAILABLE</p>
                   </div>
                 </div>
               </div>
@@ -196,14 +297,21 @@ export default function CheckoutPage() {
                 <button 
                   form="checkout-form"
                   type="submit"
-                  className="w-full bg-earth-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-primary transition-all duration-300 flex items-center justify-center gap-3 shadow-xl shadow-earth-900/20 active:scale-95 group"
+                  disabled={isProcessing}
+                  className={cn(
+                    "w-full bg-earth-900 text-white py-5 rounded-2xl font-black text-lg transition-all duration-300 flex items-center justify-center gap-3 shadow-xl group",
+                    isProcessing ? "opacity-70 cursor-not-allowed" : "hover:bg-primary shadow-earth-900/20 active:scale-95"
+                  )}
                 >
-                  Place Order <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  {isProcessing ? "Processing..." : "Place Order"}
+                  {!isProcessing && <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />}
                 </button>
 
                 <div className="mt-8 flex items-center justify-center gap-3 text-earth-400">
                   <ShieldCheck className="w-5 h-5" />
-                  <span className="text-xs font-bold uppercase tracking-widest">Guaranteed Herbal Authenticity</span>
+                  <span className="text-xs font-bold uppercase tracking-widest">
+                    Guaranteed Herbal Authenticity
+                  </span>
                 </div>
               </div>
             </div>
