@@ -122,7 +122,7 @@ export default async function AccountPage() {
             
             {user.orders.length > 0 ? (
               <div className="space-y-4">
-                {user.orders.map((order) => (
+                {user.orders.map((order: any) => (
                   <div key={order.id} className="flex justify-between items-center border-b border-earth-100 pb-4 last:border-0 last:pb-0">
                     <div>
                       <p className="font-medium">Order #{order.id.substring(0, 8).toUpperCase()}</p>
