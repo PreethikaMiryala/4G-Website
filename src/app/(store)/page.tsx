@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Leaf, ShieldCheck, Truck, Droplet } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "./products/ProductCard";
+import { Product } from "@prisma/client";
 
 export default async function Home() {
   const featuredProducts = await prisma.product.findMany({
@@ -163,7 +164,7 @@ export default async function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {featuredProducts.map((product) => (
+          {featuredProducts.map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
