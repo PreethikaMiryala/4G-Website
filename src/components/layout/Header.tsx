@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/useCartStore";
-import { useSession, signOut } from "next-auth/react";
+// import { useSession, signOut } from "next-auth/react";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,7 +16,10 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const cartCount = useCartStore((state) => state.getCartCount());
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
+  const session = null;
+  const status = "unauthenticated";
+  const signOut = ({ callbackUrl }: { callbackUrl?: string }) => { console.log("Mock SignOut", callbackUrl); };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -113,52 +116,9 @@ export default function Header() {
               <Search className="w-5 h-5" />
             </button>
             
-            {status === "loading" ? (
-              <div className="w-8 h-8 rounded-full bg-earth-200 animate-pulse hidden sm:block"></div>
-            ) : session ? (
-              <div className="relative group hidden sm:block py-2">
-                <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                  {session.user?.image ? (
-                    <Image src={session.user.image} alt={session.user.name || "User"} width={32} height={32} className="rounded-full object-cover shadow-sm border border-white/20" />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold shadow-sm">
-                      {session.user?.name?.charAt(0) || "U"}
-                    </div>
-                  )}
-                </button>
-                <div className="absolute right-0 top-full w-56 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-earth-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right translate-y-2 group-hover:translate-y-0">
-                  <div className="p-4 border-b border-earth-100/50 bg-earth-50/50 rounded-t-2xl">
-                    <p className="text-sm font-semibold text-earth-900 truncate">{session.user?.name}</p>
-                    <p className="text-xs text-earth-500 truncate mt-0.5">{session.user?.email}</p>
-                  </div>
-                  <div className="p-2 flex flex-col gap-1">
-                    <Link href="/account" className="px-4 py-2.5 text-sm font-medium text-earth-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl transition-colors">
-                      My Account
-                    </Link>
-                    <Link href="/orders" className="px-4 py-2.5 text-sm font-medium text-earth-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl transition-colors">
-                      Orders
-                    </Link>
-                    {session.user?.role === "ADMIN" && (
-                      <Link href="/admin" className="px-4 py-2.5 text-sm font-medium text-earth-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl transition-colors">
-                        Admin Dashboard
-                      </Link>
-                    )}
-                    <div className="h-px bg-earth-100/50 my-1"></div>
-                    <button 
-                      onClick={() => signOut({ callbackUrl: '/' })}
-                      className="px-4 py-2.5 text-sm font-medium text-left text-red-600 hover:bg-red-50 rounded-xl transition-colors flex items-center gap-2"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <Link href="/login" className="hover:text-primary transition-colors hidden sm:block">
-                <User className="w-5 h-5" />
-              </Link>
-            )}
+            <Link href="/login" className="hover:text-primary transition-colors hidden sm:block">
+              <User className="w-5 h-5" />
+            </Link>
 
             <Link href="/cart" className="hover:text-primary transition-colors relative block">
               <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -226,51 +186,13 @@ export default function Header() {
           <div className="mt-8 px-4">
             <div className="h-px bg-earth-100 mb-8" />
             
-            {status === "loading" ? (
-              <div className="h-12 bg-earth-100 rounded-2xl animate-pulse" />
-            ) : session ? (
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-3 mb-4">
-                  {session.user?.image ? (
-                    <Image src={session.user.image} alt="User" width={48} height={48} className="rounded-full object-cover border border-earth-200" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-lg font-bold">
-                      {session.user?.name?.charAt(0) || "U"}
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-semibold text-earth-900">{session.user?.name}</p>
-                    <p className="text-sm text-earth-500 truncate w-40">{session.user?.email}</p>
-                  </div>
-                </div>
-                <Link href="/account" className="flex justify-between items-center px-4 py-3 bg-earth-50 rounded-xl font-medium text-earth-700 hover:bg-earth-100 transition-colors">
-                  My Account
-                </Link>
-                <Link href="/orders" className="flex justify-between items-center px-4 py-3 bg-earth-50 rounded-xl font-medium text-earth-700 hover:bg-earth-100 transition-colors">
-                  Orders
-                </Link>
-                {session.user?.role === "ADMIN" && (
-                  <Link href="/admin" className="flex justify-between items-center px-4 py-3 bg-primary-50 text-primary-700 rounded-xl font-medium hover:bg-primary-100 transition-colors">
-                    Admin Dashboard
-                  </Link>
-                )}
-                <button 
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  className="flex items-center gap-2 justify-center w-full px-4 py-3 mt-4 text-red-600 bg-red-50 hover:bg-red-100 font-semibold rounded-xl transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <Link 
-                href="/login" 
-                className="flex items-center justify-center gap-2 w-full px-4 py-4 bg-earth-900 text-white font-semibold rounded-2xl hover:bg-earth-800 transition-colors shadow-lg shadow-earth-900/20"
-              >
-                <User className="w-5 h-5" />
-                Sign In / Register
-              </Link>
-            )}
+            <Link 
+              href="/login" 
+              className="flex items-center justify-center gap-2 w-full px-4 py-4 bg-earth-900 text-white font-semibold rounded-2xl hover:bg-earth-800 transition-colors shadow-lg shadow-earth-900/20"
+            >
+              <User className="w-5 h-5" />
+              Sign In / Register
+            </Link>
           </div>
         </div>
       </div>

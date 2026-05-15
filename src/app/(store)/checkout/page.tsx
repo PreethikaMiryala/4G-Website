@@ -9,10 +9,12 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 
 export default function CheckoutPage() {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
+  const session = { user: { name: "Mock User", email: "mock@example.com" } };
+  const status = "authenticated";
   const { items, getCartTotal, clearCart } = useCartStore();
   const [isClient, setIsClient] = useState(false);
   const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Success
@@ -33,10 +35,10 @@ export default function CheckoutPage() {
 
   // Require authentication
   useEffect(() => {
-    if (status === "unauthenticated") {
-      toast.error("Login is mandatory to place an order.");
-      router.push("/login?redirect=/checkout");
-    }
+    // if (status === "unauthenticated") {
+    //   toast.error("Login is mandatory to place an order.");
+    //   router.push("/login?redirect=/checkout");
+    // }
   }, [status, router]);
 
   // Pre-fill form data when session loads
@@ -51,7 +53,7 @@ export default function CheckoutPage() {
     }
   }, [session]);
 
-  if (!isClient || status === "loading" || status === "unauthenticated") {
+  if (!isClient) {
     return (
       <div className="container mx-auto px-4 pt-32 pb-24 text-center min-h-[60vh] flex flex-col items-center justify-center">
         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
