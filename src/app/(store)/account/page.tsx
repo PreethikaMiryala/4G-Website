@@ -190,7 +190,7 @@ export default async function AccountPage() {
             
             {user.addresses && user.addresses.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {user.addresses.map((addr) => (
+                {user.addresses.map((addr: any) => (
                   <div key={addr.id} className="border border-earth-200 p-4 rounded-xl">
                     <p className="font-medium mb-1">{addr.street}</p>
                     <p className="text-earth-600 text-sm">{addr.city}, {addr.state} {addr.postalCode}</p>
