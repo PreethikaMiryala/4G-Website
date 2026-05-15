@@ -1,7 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/store/useCartStore";
-import type { Product } from "@prisma/client";
+import { Product } from "@/types";
 import { toast } from "sonner";
 import { ShoppingCart } from "lucide-react";
 

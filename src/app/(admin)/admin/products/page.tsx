@@ -5,17 +5,7 @@ import { toast } from "sonner";
 import { Plus, Package, Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
 
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  comparePrice?: number | null;
-  images: string[];
-  category: string;
-  stock: number;
-}
+import { Product } from "@/types";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);

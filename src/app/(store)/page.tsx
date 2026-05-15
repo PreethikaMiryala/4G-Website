@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Leaf, ShieldCheck, Truck, Droplet } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "./products/ProductCard";
-import type { Product } from "@prisma/client";
+import { Product } from "@/types";
 
 export default async function Home() {
   const featuredProducts = await prisma.product.findMany({
