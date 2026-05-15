@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ShoppingCart, Heart } from "lucide-react";
-import { Product } from "@prisma/client";
+import type { Product } from "@prisma/client";
 import AddToCartButton from "./AddToCartButton";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
