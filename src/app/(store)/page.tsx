@@ -6,15 +6,20 @@ import ProductCard from "./products/ProductCard";
 import { Product } from "@/types";
 
 export default async function Home() {
-  const featuredProducts = await prisma.product.findMany({
-    take: 4,
-    orderBy: { createdAt: "desc" },
-    include: {
-      _count: {
-        select: { reviews: true }
+  let featuredProducts: Product[] = [];
+  try {
+    featuredProducts = await prisma.product.findMany({
+      take: 4,
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: { reviews: true }
+        }
       }
-    }
-  });
+    }) as any;
+  } catch (error) {
+    console.error("Database unreachable during build for Home:", error);
+  }
 
   return (
     <div className="flex flex-col gap-20 pb-0">

@@ -35,21 +35,29 @@ export default async function ProductsPage({
   if (sort === "price_desc") orderBy = { price: "desc" };
   if (sort === "popular") orderBy = { reviews: { _count: "desc" } };
 
-  const [products, categories] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      orderBy,
-      include: {
-        _count: {
-          select: { reviews: true }
+  let products: any[] = [];
+  let categories: any[] = [];
+  try {
+    const [p, c] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        orderBy,
+        include: {
+          _count: {
+            select: { reviews: true }
+          }
         }
-      }
-    }),
-    prisma.product.groupBy({
-      by: ["category"],
-      _count: true,
-    })
-  ]);
+      }),
+      prisma.product.groupBy({
+        by: ["category"],
+        _count: true,
+      })
+    ]);
+    products = p;
+    categories = c;
+  } catch (error) {
+    console.error("Database unreachable during build for Products:", error);
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-earth-50/30 pt-24">

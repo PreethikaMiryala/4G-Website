@@ -11,14 +11,19 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      _count: {
-        select: { reviews: true }
+  let product = null;
+  try {
+    product = await prisma.product.findUnique({
+      where: { slug },
+      include: {
+        _count: {
+          select: { reviews: true }
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Database unreachable during build for Product Detail:", error);
+  }
 
   if (!product) {
     notFound();
