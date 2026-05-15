@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -9,7 +10,6 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    // In a real app, ensure session.user.role === "ADMIN"
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

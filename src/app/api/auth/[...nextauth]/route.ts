@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { authOptions } from "@/lib/auth";
 
 const handler = NextAuth(authOptions);
