@@ -43,7 +43,7 @@ export default function Header() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [isMobileMenuOpen]);
 
-  const navLinks = [
+  const navLinks: { name: string; href: string }[] = [
     { name: "Shop", href: "/products" },
     { name: "Categories", href: "/categories" },
     { name: "About Us", href: "/about" },
@@ -99,7 +99,7 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 font-medium">
-            {navLinks.map((link) => (
+            {navLinks.map((link: { name: string; href: string }) => (
               <Link key={link.href} href={link.href} className="hover:text-primary transition-colors text-sm uppercase tracking-wider font-semibold">
                 {link.name}
               </Link>
