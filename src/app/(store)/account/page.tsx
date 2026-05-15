@@ -42,25 +42,30 @@ export default async function AccountPage() {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email as string },
-    include: {
-      addresses: true,
-      orders: {
-        orderBy: { createdAt: 'desc' },
-        take: 10, // Increase slightly so they can see history
-        include: {
-          items: {
-            include: {
-              product: {
-                select: { name: true, images: true }
+  let user = null;
+  try {
+    user = await prisma.user.findUnique({
+      where: { email: session.user.email as string },
+      include: {
+        addresses: true,
+        orders: {
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+          include: {
+            items: {
+              include: {
+                product: {
+                  select: { name: true, images: true }
+                }
               }
             }
           }
         }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Database unreachable during build for Account:", error);
+  }
 
   if (!user) {
     redirect("/login");
