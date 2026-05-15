@@ -44,7 +44,7 @@ export default function AddAddressPage() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-earth-400 uppercase tracking-wider ml-1">Address Label</label>
               <div className="flex gap-4">
-                {["Home", "Work", "Other"].map((label) => (
+                {["Home", "Work", "Other"].map((label: string) => (
                   <label key={label} className="flex-1 cursor-pointer">
                     <input type="radio" name="label" value={label} className="peer hidden" defaultChecked={label === "Home"} />
                     <div className="text-center py-3 rounded-xl border border-earth-100 bg-earth-50 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all font-bold text-sm">

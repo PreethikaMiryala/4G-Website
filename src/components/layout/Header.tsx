@@ -30,6 +30,7 @@ export default function Header() {
 
   // Close mobile menu when pathname changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
@@ -118,7 +119,7 @@ export default function Header() {
               <div className="relative group hidden sm:block py-2">
                 <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                   {session.user?.image ? (
-                    <img src={session.user.image} alt={session.user.name || "User"} className="w-8 h-8 rounded-full object-cover shadow-sm border border-white/20" />
+                    <Image src={session.user.image} alt={session.user.name || "User"} width={32} height={32} className="rounded-full object-cover shadow-sm border border-white/20" />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold shadow-sm">
                       {session.user?.name?.charAt(0) || "U"}
@@ -210,7 +211,7 @@ export default function Header() {
 
         <div className="flex-1 overflow-y-auto py-6 px-4">
           <nav className="flex flex-col gap-2">
-            {navLinks.map((link) => (
+            {navLinks.map((link: { name: string; href: string }) => (
               <Link 
                 key={link.href} 
                 href={link.href} 
@@ -231,7 +232,7 @@ export default function Header() {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 mb-4">
                   {session.user?.image ? (
-                    <img src={session.user.image} alt="User" className="w-12 h-12 rounded-full object-cover border border-earth-200" />
+                    <Image src={session.user.image} alt="User" width={48} height={48} className="rounded-full object-cover border border-earth-200" />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-lg font-bold">
                       {session.user?.name?.charAt(0) || "U"}

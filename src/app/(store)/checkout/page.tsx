@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useCartStore } from "@/store/useCartStore";
+import { useCartStore, CartItem } from "@/store/useCartStore";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CreditCard, Truck, MapPin, CheckCircle2, ShieldCheck } from "lucide-react";
+import { ArrowLeft, CreditCard, MapPin, CheckCircle2, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,7 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
   }, []);
 
@@ -41,6 +42,7 @@ export default function CheckoutPage() {
   // Pre-fill form data when session loads
   useEffect(() => {
     if (session?.user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(prev => ({
         ...prev,
         name: prev.name || session.user.name || "",
@@ -62,7 +64,7 @@ export default function CheckoutPage() {
     return (
       <div className="container mx-auto px-4 pt-32 pb-24 text-center min-h-[60vh] flex flex-col items-center justify-center">
         <h1 className="text-3xl font-black text-earth-900 mb-4 tracking-tight">Your bag is empty</h1>
-        <p className="text-earth-500 mb-8 max-w-md mx-auto">Looks like you haven't added any natural remedies to your cart yet.</p>
+        <p className="text-earth-500 mb-8 max-w-md mx-auto">Looks like you haven&apos;t added any natural remedies to your cart yet.</p>
         <Link href="/products" className="bg-earth-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-primary transition-all shadow-xl shadow-earth-900/20">
           Return to Shop
         </Link>
@@ -84,7 +86,7 @@ export default function CheckoutPage() {
         totalAmount: total,
         paymentMethod: "COD",
         shippingAddress: formData,
-        items: items.map(item => ({
+        items: items.map((item: CartItem) => ({
           productId: item.product.id,
           quantity: item.quantity,
           price: item.product.price
@@ -111,8 +113,9 @@ export default function CheckoutPage() {
       setStep(3);
       clearCart();
       toast.success("Order placed successfully via Cash on Delivery!");
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
@@ -254,7 +257,7 @@ export default function CheckoutPage() {
                 <h3 className="text-2xl font-black text-earth-900 mb-8 tracking-tight">Review Order</h3>
                 
                 <div className="space-y-6 mb-8 max-h-[300px] overflow-y-auto pr-2 scrollbar-hide">
-                  {items.map((item) => (
+                  {items.map((item: CartItem) => (
                     <div key={item.product.id} className="flex gap-4 items-center">
                       <div className="relative w-16 h-16 bg-earth-50 rounded-xl overflow-hidden shrink-0">
                         {item.product.images[0] && (

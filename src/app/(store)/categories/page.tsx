@@ -16,7 +16,7 @@ export default function CategoriesPage() {
           { name: "Digestion", desc: "Digestive aids and traditional stomach remedies." },
           { name: "Supplements", desc: "High-grade herbal supplements for health." },
           { name: "Lifestyle", desc: "Traditional mouth fresheners and lifestyle products." }
-        ].map((cat) => (
+        ].map((cat: { name: string; desc: string }) => (
           <Link 
             key={cat.name} 
             href={`/products?category=${cat.name}`}

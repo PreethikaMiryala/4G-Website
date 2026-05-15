@@ -37,7 +37,7 @@ export default function AdminLayout({
             { name: "Products", href: "/admin/products", icon: Package },
             { name: "Customers", href: "/admin/users", icon: Users },
             { name: "Settings", href: "/admin/settings", icon: Settings },
-          ].map((item) => (
+          ].map((item: { name: string; href: string; icon: any }) => (
             <Link
               key={item.name}
               href={item.href}

@@ -68,7 +68,7 @@ export default async function Home() {
             
             <div className="flex items-center gap-6 pt-8 border-t border-earth-200/60 max-w-md">
               <div className="flex -space-x-4">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3].map((i: number) => (
                   <div key={i} className="w-12 h-12 rounded-full border-2 border-earth-50 bg-earth-200 flex items-center justify-center text-xs font-bold text-earth-600 overflow-hidden relative shadow-sm">
                     <Image src={`https://i.pravatar.cc/100?img=${i + 10}`} fill className="object-cover" alt="User" />
                   </div>
@@ -136,7 +136,7 @@ export default async function Home() {
               title: "Fast Delivery",
               desc: "Safe & quick delivery straight to your doorstep across India.",
             },
-          ].map((feature, i) => (
+          ].map((feature: { icon: any; title: string; desc: string }, i: number) => (
             <div
               key={i}
               className="flex flex-col items-center text-center p-8 sm:p-10 rounded-[2rem] bg-white shadow-xl shadow-earth-100/50 border border-earth-100 hover:-translate-y-2 hover:shadow-2xl hover:shadow-earth-200/50 transition-all duration-300 group"
@@ -177,7 +177,7 @@ export default async function Home() {
           <h2 className="text-3xl md:text-5xl font-black text-earth-900 mb-4 tracking-tight">Trusted by Thousands</h2>
           <p className="text-earth-500 font-medium mb-16 max-w-2xl mx-auto text-lg">Real stories from real people who found relief through our authentic remedies.</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3].map((i: number) => (
               <div key={i} className="bg-white border border-earth-200 p-10 rounded-3xl text-left shadow-xl shadow-earth-200/30 hover:-translate-y-2 transition-transform duration-300">
                 <div className="flex text-yellow-400 mb-6 gap-1">{"★".repeat(5)}</div>
                 <p className="text-earth-600 mb-8 font-medium leading-relaxed italic text-lg">

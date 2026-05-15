@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useCartStore } from "@/store/useCartStore";
+import { useCartStore, CartItem } from "@/store/useCartStore";
 import Link from "next/link";
 import Image from "next/image";
 import { Trash2, ShoppingBag, ArrowRight, Plus, Minus, ShieldCheck, Truck } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getCartTotal } = useCartStore();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
   }, []);
 
@@ -49,7 +49,7 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-6">
-              {items.map((item) => (
+              {items.map((item: CartItem) => (
                 <div key={item.product.id} className="group bg-white p-6 rounded-[2rem] border border-earth-100 shadow-sm hover:shadow-xl hover:shadow-earth-200/50 transition-all duration-500 flex gap-6">
                   <div className="relative w-32 h-32 sm:w-40 sm:h-40 bg-earth-50 rounded-2xl overflow-hidden shrink-0">
                     {item.product.images[0] ? (

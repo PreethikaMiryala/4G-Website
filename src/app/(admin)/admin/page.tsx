@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
       <h2 className="text-3xl font-bold tracking-tight text-earth-900">Dashboard Overview</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat) => (
+        {statCards.map((stat: { name: string; value: string; icon: any; color: string; bg: string }) => (
           <div key={stat.name} className="bg-white p-6 rounded-2xl shadow-sm border border-earth-100 flex items-center gap-4">
             <div className={`w-14 h-14 rounded-full flex items-center justify-center ${stat.bg} ${stat.color}`}>
               <stat.icon className="w-6 h-6" />

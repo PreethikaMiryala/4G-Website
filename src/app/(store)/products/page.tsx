@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import Image from "next/image";
-import { ShoppingBag, Filter, ArrowRight } from "lucide-react";
+import { ShoppingBag, ArrowRight } from "lucide-react";
 import ProductCard from "./ProductCard";
 import SearchInput from "./SearchInput";
 import SortDropdown from "./SortDropdown";
@@ -17,7 +18,7 @@ export default async function ProductsPage({
   const q = resolvedParams.q as string | undefined;
   const sort = (resolvedParams.sort as string) || "newest";
 
-  const where: any = {};
+  const where: Prisma.ProductWhereInput = {};
   if (category && category !== "All") {
     where.category = category;
   }
@@ -29,7 +30,7 @@ export default async function ProductsPage({
   }
 
   // Sorting logic
-  let orderBy: any = { createdAt: "desc" };
+  let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
   if (sort === "price_asc") orderBy = { price: "asc" };
   if (sort === "price_desc") orderBy = { price: "desc" };
   if (sort === "popular") orderBy = { reviews: { _count: "desc" } };
@@ -103,7 +104,7 @@ export default async function ProductsPage({
             >
               All Remedies
             </Link>
-            {categories.map((cat) => (
+            {categories.map((cat: { category: string; _count: number }) => (
               <Link
                 key={cat.category}
                 href={`/products?category=${cat.category}`}
@@ -143,7 +144,7 @@ export default async function ProductsPage({
 
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-            {products.map((product) => (
+            {products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

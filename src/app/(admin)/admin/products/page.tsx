@@ -38,7 +38,7 @@ export default function AdminProducts() {
       const res = await fetch("/api/admin/products");
       const data = await res.json();
       setProducts(data);
-    } catch (_error) {
+    } catch {
       toast.error("Failed to load products");
     } finally {
       setIsLoading(false);
@@ -71,7 +71,7 @@ export default function AdminProducts() {
         const err = await res.json();
         toast.error(err.error || "Failed to add product");
       }
-    } catch (_error) {
+    } catch {
       toast.error("Something went wrong");
     }
   };
@@ -152,7 +152,7 @@ export default function AdminProducts() {
             ) : products.length === 0 ? (
               <tr><td colSpan={5} className="p-8 text-center text-earth-500">No products found. Add your first product!</td></tr>
             ) : (
-              products.map((product) => (
+              products.map((product: Product) => (
                 <tr key={product.id} className="border-b border-earth-50 hover:bg-earth-50/50">
                   <td className="p-4">
                     <div className="flex items-center gap-3">

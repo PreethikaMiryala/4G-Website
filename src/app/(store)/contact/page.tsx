@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Mail, Phone, MapPin, Send, MessageSquare } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -142,7 +141,7 @@ export default function ContactPage() {
                   { days: "Monday - Friday", hours: "9:00 AM - 6:00 PM" },
                   { days: "Saturday", hours: "10:00 AM - 2:00 PM" },
                   { days: "Sunday", hours: "Closed" }
-                ].map((item, idx) => (
+                ].map((item: { days: string; hours: string }, idx: number) => (
                   <div key={idx} className="flex justify-between items-center py-2 border-b border-earth-50 last:border-0">
                     <span className="text-earth-500 font-medium">{item.days}</span>
                     <span className="text-earth-900 font-bold text-sm">{item.hours}</span>

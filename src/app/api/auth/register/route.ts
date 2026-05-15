@@ -39,7 +39,8 @@ export async function POST(req: Request) {
       },
     });
 
-    const { password: _newUserPassword, ...rest } = newUser;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...rest } = newUser;
 
     return NextResponse.json(
       { user: rest, message: "User created successfully" },

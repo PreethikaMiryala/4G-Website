@@ -44,7 +44,7 @@ function LoginContent() {
         router.push(callbackUrl);
         router.refresh(); // Refresh to update session state in components
       }
-    } catch (_error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);

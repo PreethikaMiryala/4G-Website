@@ -7,6 +7,34 @@ import LogoutButton from "./LogoutButton";
 import Image from "next/image";
 import Link from "next/link";
 
+interface OrderItem {
+  id: string;
+  quantity: number;
+  price: number;
+  product: {
+    name: string | null;
+    images: string[];
+  } | null;
+}
+
+interface Order {
+  id: string;
+  createdAt: Date;
+  status: string;
+  totalAmount: number;
+  paymentMethod: string;
+  items: OrderItem[];
+}
+
+interface Address {
+  id: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
 export default async function AccountPage() {
   const session = await getServerSession(authOptions);
 
@@ -78,7 +106,7 @@ export default async function AccountPage() {
                 { name: "My Orders", icon: ShoppingBag, href: "#orders" },
                 { name: "Saved Addresses", icon: MapPin, href: "#addresses" },
                 { name: "Notifications", icon: Bell, href: "#notifications" },
-              ].map((item) => (
+              ].map((item: { name: string; icon: any; href: string }) => (
                 <a 
                   key={item.name} 
                   href={item.href}
@@ -130,7 +158,7 @@ export default async function AccountPage() {
             
             {user.orders.length > 0 ? (
               <div className="space-y-6">
-                {user.orders.map((order: any) => (
+                {user.orders.map((order: Order) => (
                   <div key={order.id} className="border border-earth-100 rounded-2xl p-6 bg-earth-50/30">
                     <div className="flex justify-between items-start border-b border-earth-100 pb-4 mb-4">
                       <div>
@@ -147,7 +175,7 @@ export default async function AccountPage() {
                     </div>
                     
                     <div className="space-y-3">
-                      {order.items && order.items.map((item: any) => (
+                      {order.items && order.items.map((item: OrderItem) => (
                         <div key={item.id} className="flex items-center gap-4">
                           <div className="w-12 h-12 relative bg-white rounded-lg overflow-hidden shrink-0 border border-earth-100">
                             {item.product?.images?.[0] ? (
@@ -190,7 +218,7 @@ export default async function AccountPage() {
             
             {user.addresses && user.addresses.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {user.addresses.map((addr: any) => (
+                {user.addresses.map((addr: Address) => (
                   <div key={addr.id} className="border border-earth-200 p-4 rounded-xl">
                     <p className="font-medium mb-1">{addr.street}</p>
                     <p className="text-earth-600 text-sm">{addr.city}, {addr.state} {addr.postalCode}</p>

@@ -62,7 +62,7 @@ export default async function ProductDetailPage({
 
             {/* Sub-images (Optional) */}
             <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
+              {[1, 2, 3, 4].map((i: number) => (
                 <div key={i} className="aspect-square bg-white rounded-2xl border border-earth-100 overflow-hidden cursor-pointer hover:border-primary transition-all opacity-40 hover:opacity-100">
                   {product.images[0] && <Image src={product.images[0]} alt="" fill className="object-cover" />}
                 </div>
@@ -83,7 +83,7 @@ export default async function ProductDetailPage({
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2 bg-amber-50 px-4 py-1.5 rounded-full border border-amber-100 shadow-sm">
                   <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
+                    {[1, 2, 3, 4, 5].map((star: number) => (
                       <Star key={star} className={`w-4 h-4 ${star <= Math.round(rating) ? 'fill-amber-400 text-amber-400' : 'text-amber-200'}`} />
                     ))}
                   </div>
@@ -153,7 +153,7 @@ export default async function ProductDetailPage({
                   "No synthetic colors or artificial preservatives",
                   "Fast-acting relief with long-term healing",
                   "Prepared in small batches for maximum potency"
-                ].map((benefit, idx) => (
+                ].map((benefit: string, idx: number) => (
                   <li key={idx} className="flex items-center gap-3">
                     <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center shrink-0">
                       <Check className="w-3 h-3 text-white stroke-[4]" />

@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         status: "PENDING",
         shippingAddress: shippingAddress || {},
         items: {
-          create: items.map((item: any) => ({
+          create: items.map((item: { productId: string; quantity: number; price: number }) => ({
             productId: item.productId,
             quantity: item.quantity,
             price: item.price
@@ -46,8 +46,9 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, orderId: order.id });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Order Creation Error:", error);
-    return NextResponse.json({ error: error.message || "Failed to create order" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed to create order";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
