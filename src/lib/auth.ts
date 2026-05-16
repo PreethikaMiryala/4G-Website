@@ -80,14 +80,36 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (session?.user) {
-        session.user.id = token.sub as string;
-        session.user.role = token.role as string;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
-        session.user.image = token.picture as string;
+        // If using JWT strategy (our current config)
+        if (token) {
+          session.user.id = token.sub as string;
+          session.user.role = token.role as string;
+          session.user.name = token.name as string;
+          session.user.email = token.email as string;
+          session.user.image = token.picture as string;
+        } 
+        // If using Database strategy (fallback)
+        else if (user) {
+          session.user.id = user.id;
+          session.user.role = user.role;
+          session.user.name = user.name;
+          session.user.email = user.email;
+          session.user.image = user.image;
+        }
       }
       return session;
     },

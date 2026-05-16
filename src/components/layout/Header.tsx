@@ -116,15 +116,25 @@ export default function Header() {
             {status === "loading" ? (
               <div className="w-8 h-8 rounded-full bg-earth-100 animate-pulse hidden sm:block" />
             ) : status === "authenticated" && session?.user ? (
-              <Link href="/account" className="hover:text-primary transition-colors hidden sm:flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">
-                  {session.user.image ? (
-                    <Image src={session.user.image} alt={session.user.name || "User"} width={32} height={32} className="rounded-full" />
-                  ) : (
-                    (session.user.name?.charAt(0) || "U")
-                  )}
-                </div>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link href="/account" className="hover:text-primary transition-colors hidden sm:flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">
+                    {session.user.image ? (
+                      <Image src={session.user.image} alt={session.user.name || "User"} width={32} height={32} className="rounded-full" />
+                    ) : (
+                      (session.user.name?.charAt(0) || "U")
+                    )}
+                  </div>
+                  <span className="hidden lg:block text-xs font-bold uppercase tracking-wider">{session.user.name?.split(' ')[0]}</span>
+                </Link>
+                <button 
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="p-2 hover:text-red-500 transition-colors hidden sm:block"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
             ) : (
               <Link href="/login" className="hover:text-primary transition-colors hidden sm:block">
                 <User className="w-5 h-5" />
