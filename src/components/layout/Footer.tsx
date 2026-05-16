@@ -54,10 +54,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-lg mb-6">Categories</h4>
             <ul className="space-y-4">
-              <li><Link href="/categories/pain-relief" className="text-earth-600 hover:text-primary transition-colors">Pain Relief</Link></li>
-              <li><Link href="/categories/cold-cough" className="text-earth-600 hover:text-primary transition-colors">Cold & Cough</Link></li>
-              <li><Link href="/categories/immunity" className="text-earth-600 hover:text-primary transition-colors">Immunity Boosters</Link></li>
-              <li><Link href="/categories/wellness" className="text-earth-600 hover:text-primary transition-colors">Daily Wellness</Link></li>
+              <li><Link href="/products?category=Pain Relief" className="text-earth-600 hover:text-primary transition-colors">Pain Relief</Link></li>
+              <li><Link href="/products?category=Cold & Cough" className="text-earth-600 hover:text-primary transition-colors">Cold & Cough</Link></li>
+              <li><Link href="/products?category=Wellness" className="text-earth-600 hover:text-primary transition-colors">Immunity Boosters</Link></li>
+              <li><Link href="/products?category=Wellness" className="text-earth-600 hover:text-primary transition-colors">Daily Wellness</Link></li>
             </ul>
           </div>
           
