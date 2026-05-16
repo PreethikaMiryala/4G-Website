@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Leaf, ShieldCheck, Truck, Droplet } from "lucide-react";
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import ProductCard from "./products/ProductCard";
 import { Product } from "@/types";

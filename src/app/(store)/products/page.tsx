@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 import { Prisma } from "@prisma/client";
 import Image from "next/image";
 import { ShoppingBag, ArrowRight } from "lucide-react";

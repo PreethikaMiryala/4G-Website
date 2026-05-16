@@ -1,5 +1,6 @@
 import { IndianRupee, Package, ShoppingBag, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
   // Fetch stats from DB (Safe defaults if DB not yet migrated)

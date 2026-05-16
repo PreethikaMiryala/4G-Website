@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth/next";
+export const dynamic = "force-dynamic";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";

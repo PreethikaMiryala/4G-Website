@@ -113,7 +113,9 @@ export default function Header() {
               <Search className="w-5 h-5" />
             </button>
             
-            {status === "authenticated" && session?.user ? (
+            {status === "loading" ? (
+              <div className="w-8 h-8 rounded-full bg-earth-100 animate-pulse hidden sm:block" />
+            ) : status === "authenticated" && session?.user ? (
               <Link href="/account" className="hover:text-primary transition-colors hidden sm:flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">
                   {session.user.image ? (

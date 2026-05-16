@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Star, ShieldCheck, Truck, ArrowLeft, Heart, Share2, Check } from "lucide-react";
