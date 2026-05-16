@@ -1,5 +1,5 @@
-// import { getServerSession } from "next-auth/next";
-// import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { User, MapPin, ShoppingBag, Bell, Plus } from "lucide-react";
@@ -36,12 +36,11 @@ interface Address {
 }
 
 export default async function AccountPage() {
-  // const session = await getServerSession(authOptions);
-  const session = { user: { email: "mock@example.com", name: "Mock User" } };
+  const session = await getServerSession(authOptions);
 
-  // if (!session || !session.user) {
-  //   redirect("/login");
-  // }
+  if (!session || !session.user) {
+    redirect("/login");
+  }
 
   let user = null;
   try {
