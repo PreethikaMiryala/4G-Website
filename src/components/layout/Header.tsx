@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/useCartStore";
-// import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,10 +16,7 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const cartCount = useCartStore((state) => state.getCartCount());
-  // const { data: session, status } = useSession();
-  const session = null;
-  const status = "unauthenticated";
-  const signOut = ({ callbackUrl }: { callbackUrl?: string }) => { console.log("Mock SignOut", callbackUrl); };
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -116,9 +113,21 @@ export default function Header() {
               <Search className="w-5 h-5" />
             </button>
             
-            <Link href="/login" className="hover:text-primary transition-colors hidden sm:block">
-              <User className="w-5 h-5" />
-            </Link>
+            {status === "authenticated" && session?.user ? (
+              <Link href="/account" className="hover:text-primary transition-colors hidden sm:flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20">
+                  {session.user.image ? (
+                    <Image src={session.user.image} alt={session.user.name || "User"} width={32} height={32} className="rounded-full" />
+                  ) : (
+                    (session.user.name?.charAt(0) || "U")
+                  )}
+                </div>
+              </Link>
+            ) : (
+              <Link href="/login" className="hover:text-primary transition-colors hidden sm:block">
+                <User className="w-5 h-5" />
+              </Link>
+            )}
 
             <Link href="/cart" className="hover:text-primary transition-colors relative block">
               <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />

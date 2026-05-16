@@ -104,8 +104,12 @@ export default async function AccountPage() {
               </div>
             </div>
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 bg-primary-100 text-primary-800 rounded-full flex items-center justify-center text-2xl font-bold">
-                {user.name?.charAt(0) || "U"}
+              <div className="w-16 h-16 bg-primary-100 text-primary-800 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden relative border border-primary-200">
+                {session.user.image ? (
+                  <Image src={session.user.image} alt={user.name || "User"} fill className="object-cover" />
+                ) : (
+                  user.name?.charAt(0) || "U"
+                )}
               </div>
               <div>
                 <h3 className="font-bold text-lg">{user.name}</h3>
